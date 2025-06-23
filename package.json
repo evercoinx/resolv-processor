@@ -1,0 +1,44 @@
+{
+  "name": "resolv-processor",
+  "version": "1.0.0",
+  "description": "Resolv processor",
+  "scripts": {
+    "format": "prettier --check 'src/**/*.ts'",
+    "format:fix": "prettier --write 'src/**/*.ts'",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts --fix src",
+    "build": "tsc && npm run sentio:build",
+    "deploy": "npm run build && npm run sentio:upload",
+    "sentio:build": "sentio build",
+    "sentio:upload": "sentio upload"
+  },
+  "keywords": [
+    "processor",
+    "base",
+    "usr"
+  ],
+  "author": "Serge Grigorenko <serge.grigorenko@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@sentio/sdk": "^2.58.7",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@sentio/cli": "^2.26.3",
+    "@tsconfig/node22": "^22.0.2",
+    "@types/node": "^24.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

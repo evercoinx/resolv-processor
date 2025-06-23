@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Package manager lock files (npm's package-lock.json excluded, yarn.lock is tracked)
+package-lock.json
+
+# Build output
+dist/
+*.js
+*.js.map
+*.d.ts
+
+# IDE
+.idea/
+.vscode/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp

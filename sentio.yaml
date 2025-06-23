@@ -1,0 +1,36 @@
+project: resolv-processor
+chains:
+  - base
+
+processor:
+  path: ./src/processor.ts
+  
+build:
+  sourceDir: src
+  outDir: dist
+  tsConfig: ./tsconfig.json
+
+networks:
+  base:
+    chainId: 8453
+
+environments:
+  development:
+    chains:
+      - base
+    debug: true
+  production:
+    chains:
+      - base
+    debug: false
+
+resources:
+  memory: 512M
+  timeout: 300s
+
+monitoring:
+  enabled: true
+  metrics:
+    - processor_errors
+    - event_processing_time
+    - total_events_processed
