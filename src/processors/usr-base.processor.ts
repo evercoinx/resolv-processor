@@ -7,7 +7,6 @@ const USR_DECIMALS = 18;
 const BASE_CHAIN = "base";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-// Error types for better error categorization
 enum ErrorType {
   CONTRACT_CALL_FAILED = "CONTRACT_CALL_FAILED",
   INVALID_EVENT_DATA = "INVALID_EVENT_DATA",
@@ -24,7 +23,6 @@ ERC20Processor.bind({
 
 async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
   try {
-    // Validate event data
     if (!event || !event.args) {
       ctx.eventLogger.emit("error", {
         errorType: ErrorType.INVALID_EVENT_DATA,
@@ -37,10 +35,8 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
     const { transactionHash } = event;
     const { from, to, value } = event.args;
     const { blockNumber, contract, eventLogger, meter } = ctx;
-    // Get logIndex from raw event data if available
     const logIndex = (event as unknown as { logIndex?: number }).logIndex || 0;
 
-    // Validate addresses
     if (!from || !to) {
       eventLogger.emit("error", {
         errorType: ErrorType.INVALID_EVENT_DATA,
@@ -51,7 +47,6 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       return;
     }
 
-    // Validate value
     if (!value || value < 0n) {
       eventLogger.emit("error", {
         errorType: ErrorType.INVALID_EVENT_DATA,
@@ -66,7 +61,6 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
 
     const amount = value.scaleDown(USR_DECIMALS);
 
-    // Emit transfer event with proper distinct ID including logIndex
     eventLogger.emit("usr_transfer", {
       distinctId: `${transactionHash}-${logIndex}`,
       from,
@@ -78,7 +72,6 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       logIndex,
     });
 
-    // Handle sender balance update
     if (from !== ZERO_ADDRESS) {
       try {
         const senderBalance = await contract.balanceOf(from);
@@ -108,7 +101,6 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       }
     }
 
-    // Handle receiver balance update
     if (to !== ZERO_ADDRESS) {
       try {
         const receiverBalance = await contract.balanceOf(to);
@@ -138,7 +130,6 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       }
     }
   } catch (error) {
-    // Catch any unexpected errors
     ctx.eventLogger.emit("error", {
       errorType: ErrorType.PROCESSING_ERROR,
       message: `Unexpected error in handleTransferEvent: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -153,7 +144,6 @@ async function handleTimeInterval(_: unknown, ctx: ERC20Context) {
   try {
     const { blockNumber, contract, eventLogger, meter } = ctx;
 
-    // Get total supply with error handling
     let totalSupply;
     try {
       totalSupply = await contract.totalSupply();
@@ -166,7 +156,6 @@ async function handleTimeInterval(_: unknown, ctx: ERC20Context) {
       return;
     }
 
-    // Validate total supply
     if (!totalSupply || totalSupply < 0n) {
       eventLogger.emit("error", {
         errorType: ErrorType.INVALID_EVENT_DATA,
@@ -189,7 +178,6 @@ async function handleTimeInterval(_: unknown, ctx: ERC20Context) {
       network: BASE_CHAIN,
     });
   } catch (error) {
-    // Catch any unexpected errors
     ctx.eventLogger.emit("error", {
       errorType: ErrorType.PROCESSING_ERROR,
       message: `Unexpected error in handleTimeInterval: ${error instanceof Error ? error.message : "Unknown error"}`,

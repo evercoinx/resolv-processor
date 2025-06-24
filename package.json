@@ -7,10 +7,12 @@
     "format:fix": "prettier --write 'src/**/*.ts'",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts --fix src",
+    "typecheck": "tsc --noEmit",
     "build": "tsc && npm run sentio:build",
     "deploy": "npm run build && npm run sentio:upload",
     "sentio:build": "sentio build",
-    "sentio:upload": "sentio upload"
+    "sentio:upload": "sentio upload",
+    "test": "sentio test"
   },
   "keywords": [
     "processor",
@@ -39,6 +41,5 @@
     "eslint-plugin-prettier": "^5.5.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }

@@ -12,7 +12,8 @@ const DEFAULTS = {
 export const config = {
   usrBaseAddress: (process.env.USR_BASE_ADDRESS || DEFAULTS.USR_BASE_ADDRESS) as `0x${string}`,
   timeIntervalMinutes: Number(process.env.TIME_INTERVAL_MINUTES) || DEFAULTS.TIME_INTERVAL_MINUTES,
-  backfillIntervalMinutes: Number(process.env.BACKFILL_INTERVAL_MINUTES) || DEFAULTS.BACKFILL_INTERVAL_MINUTES,
+  backfillIntervalMinutes:
+    Number(process.env.BACKFILL_INTERVAL_MINUTES) || DEFAULTS.BACKFILL_INTERVAL_MINUTES,
   startBlock: Number(process.env.START_BLOCK) || DEFAULTS.START_BLOCK,
 };
 
@@ -21,7 +22,7 @@ if (process.env.NODE_ENV !== "production") {
     usrBaseAddress: config.usrBaseAddress,
     timeIntervalMinutes: config.timeIntervalMinutes,
     backfillIntervalMinutes: config.backfillIntervalMinutes,
-    startBlock: config.startBlock
+    startBlock: config.startBlock,
   });
 }
 
