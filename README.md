@@ -1,5 +1,7 @@
 # Resolv USR Holdings Tracker - Sentio Processor
 
+[![CI](https://github.com/evercoinx/resolv-processor/actions/workflows/ci.yml/badge.svg)](https://github.com/evercoinx/resolv-processor/actions/workflows/ci.yml)
+
 This Sentio processor tracks historical holdings amounts of all USR holders (plain USR tokens, not deposited anywhere) on Base network.
 
 ## Features

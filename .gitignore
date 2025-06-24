@@ -1,9 +1,6 @@
 # Dependencies
 node_modules/
 
-# Package manager lock files (npm's package-lock.json excluded, yarn.lock is tracked)
-package-lock.json
-
 # Build output
 dist/
 *.js
@@ -34,3 +31,6 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+
+# Project-specific files
+!eslint.config.js

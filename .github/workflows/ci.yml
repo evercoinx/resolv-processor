@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    env:
+      USR_BASE_ADDRESS: "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9"
+      TIME_INTERVAL_MINUTES: 60
+      BACKFILL_INTERVAL_MINUTES: 60
+      START_BLOCK: 18500000
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check code format
+        run: npm run format
+        
+      - name: Lint code
+        run: npm run lint
+        
+      - name: Type check code
+        run: npm run typecheck
+        
+      - name: Run tests
+        run: npm test
