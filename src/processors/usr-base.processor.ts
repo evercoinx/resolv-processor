@@ -2,16 +2,13 @@ import { EthChainId } from "@sentio/sdk/eth";
 import { ERC20Processor } from "@sentio/sdk/eth/builtin/erc20";
 import type { ERC20Context, TransferEvent } from "@sentio/sdk/eth/builtin/erc20";
 import { config } from "../config.js";
-
-const USR_DECIMALS = 18;
-const BASE_CHAIN = "base";
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-enum ErrorType {
-  CONTRACT_CALL_FAILED = "CONTRACT_CALL_FAILED",
-  INVALID_EVENT_DATA = "INVALID_EVENT_DATA",
-  PROCESSING_ERROR = "PROCESSING_ERROR",
-}
+import {
+  BASE_CHAIN,
+  ErrorType,
+  EXCLUDED_CONTRACTS,
+  USR_DECIMALS,
+  ZERO_ADDRESS,
+} from "../constants.js";
 
 ERC20Processor.bind({
   address: config.usrBaseAddress,
@@ -23,19 +20,19 @@ ERC20Processor.bind({
 
 async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
   try {
+    const { blockNumber, contract, eventLogger, meter } = ctx;
+
     if (!event || !event.args) {
-      ctx.eventLogger.emit("error", {
+      eventLogger.emit("error", {
         errorType: ErrorType.INVALID_EVENT_DATA,
         message: "Invalid transfer event: missing event or args",
-        block: ctx.blockNumber,
+        block: blockNumber,
       });
       return;
     }
 
     const { transactionHash } = event;
     const { from, to, value } = event.args;
-    const { blockNumber, contract, eventLogger, meter } = ctx;
-    const logIndex = (event as unknown as { logIndex?: number }).logIndex || 0;
 
     if (!from || !to) {
       eventLogger.emit("error", {
@@ -59,6 +56,7 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       return;
     }
 
+    const logIndex = (event as unknown as { logIndex?: number }).logIndex || 0;
     const amount = value.scaleDown(USR_DECIMALS);
 
     eventLogger.emit("usr_transfer", {
@@ -72,7 +70,11 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       logIndex,
     });
 
-    if (from !== ZERO_ADDRESS) {
+    const isFromExcluded = Array.from(EXCLUDED_CONTRACTS).some(
+      (addr) => addr.toLowerCase() === from.toLowerCase(),
+    );
+
+    if (from !== ZERO_ADDRESS && !isFromExcluded) {
       try {
         const senderBalance = await contract.balanceOf(from);
         const senderBalanceScaled = senderBalance.scaleDown(USR_DECIMALS);
@@ -101,7 +103,11 @@ async function handleTransferEvent(event: TransferEvent, ctx: ERC20Context) {
       }
     }
 
-    if (to !== ZERO_ADDRESS) {
+    const isToExcluded = Array.from(EXCLUDED_CONTRACTS).some(
+      (addr) => addr.toLowerCase() === to.toLowerCase(),
+    );
+
+    if (to !== ZERO_ADDRESS && !isToExcluded) {
       try {
         const receiverBalance = await contract.balanceOf(to);
         const receiverBalanceScaled = receiverBalance.scaleDown(USR_DECIMALS);

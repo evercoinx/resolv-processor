@@ -3,14 +3,14 @@ import { mockTransferLog } from "@sentio/sdk/eth/builtin/erc20";
 import { EthChainId } from "@sentio/sdk/eth";
 import { describe, test, before } from "node:test";
 import assert from "node:assert";
+import { ZERO_ADDRESS } from "../constants.js";
 
 describe("USR Base Processor Tests", () => {
   const TEST_USR_ADDRESS = "0x35E5dB674D8e93a03d814FA0ADa70731efe8a4b9";
   const USER1 = "0x1111111111111111111111111111111111111111";
   const USER2 = "0x2222222222222222222222222222222222222222";
-  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
   const SUPERFORM_ROUTER = "0x7B8d68f90dAaC67C577936d3Ce451801864EF189";
-  const MORPHO_BASE = "0xbbbbbd1ba9b47a0a5b86e3f0efc5857ce6432bbb";
+  const MORPHO_BASE = "0xbbbbbd1ba9b47a0a5b86e3f0efc5857ce6432bbb"; // Use lowercase to avoid checksum issues
 
   const service = new TestProcessorServer(() => import("./usr-base.processor.js"), {
     USR_BASE_ADDRESS: TEST_USR_ADDRESS,
@@ -23,8 +23,8 @@ describe("USR Base Processor Tests", () => {
     await service.start();
   });
 
-  describe("Transfer Event Processing", () => {
-    test("should process EOA to EOA transfer correctly", async () => {
+  describe("Transfer event processing", () => {
+    test("should process eoa to eoa transfer correctly", async () => {
       const value = 1_000n * 10n ** 18n; // 1000 USR
 
       const transferLog = mockTransferLog(TEST_USR_ADDRESS, {
@@ -149,7 +149,7 @@ describe("USR Base Processor Tests", () => {
       }
     });
 
-    test("should process multiple transfers with distinct IDs", async () => {
+    test("should process multiple transfers with distinct ids", async () => {
       const value = 1_000n * 10n ** 18n; // 1000 USR
 
       const transfer1 = mockTransferLog(TEST_USR_ADDRESS, {
@@ -191,7 +191,7 @@ describe("USR Base Processor Tests", () => {
     });
   });
 
-  describe("Superform Deposit Flow Simulation", () => {
+  describe("Superform deposit flow simulation", () => {
     test("should track deposit flow transfers correctly", async () => {
       const depositAmount = 10_000n * 10n ** 18n; // 10000 USR
 
@@ -244,7 +244,7 @@ describe("USR Base Processor Tests", () => {
     });
   });
 
-  describe("Event Attributes", () => {
+  describe("Event attributes", () => {
     test("should include all required attributes in transfer events", async () => {
       const value = 1234n * 10n ** 18n; // 1234 USR
 
